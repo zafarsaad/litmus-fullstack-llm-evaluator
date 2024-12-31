@@ -1,0 +1,9 @@
+# backend files to ignore
+litmus-backend/node_modules
+litmus-frontend/node_modules
+
+# Keep environment variables out of version control
+litmus-backend/.env
+litmus-frontend/.env
+
+.DS_Store
