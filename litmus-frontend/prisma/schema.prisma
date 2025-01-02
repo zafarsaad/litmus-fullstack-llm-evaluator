@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int  @id @default(autoincrement())
+  name String
+  email String @unique
+
+  experiments Experiment[] // 1:N relationship
+}
+
+model Experiment {
+  id Int @id @default(autoincrement())
+  name String
+  systemPrompt String
+  // llmModel String // this needs to be moved out to it's own table probably
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+
+  experimentRun ExperimentRun[]
+  experimentTestCase ExperimentTestCase[]
+}
+
+model ExperimentRun {
+  id Int @id @default(autoincrement())
+  experimentId Int
+  experiment Experiment @relation(fields: [experimentId], references: [id])
+  runDate DateTime @default(now())
+
+  testCaseResult TestCaseResult[] 
+}
+
+model ExperimentTestCase {
+  id Int @id @default(autoincrement())
+  experimentId Int
+  testCaseId Int
+
+  experiment Experiment @relation(fields: [experimentId], references: [id])
+  testCase TestCase @relation(fields: [testCaseId], references: [id])
+}
+
+model TestCaseResult {
+  id Int @id @default(autoincrement())
+  experimentRunId Int
+  testCaseId Int // Question - do we need unique here?
+  score Float
+
+  experimentRun ExperimentRun @relation(fields: [experimentRunId], references: [id])
+  testCase TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+
+  @@unique([experimentRunId, testCaseId])
+}
+
+model TestCase {
+  id Int @id @default(autoincrement())
+  userMessage String
+  expectedOutput String
+  graderType String
+
+  testCaseResult TestCaseResult[]
+  experimentTestCase ExperimentTestCase[]
+}
+
+model llmModel {
+  id Int @id @default(autoincrement())
+  llmName String
+  connectionString String?
+}
