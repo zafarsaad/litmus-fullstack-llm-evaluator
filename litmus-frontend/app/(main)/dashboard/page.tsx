@@ -1,5 +1,7 @@
+// import { queryGroq } from "@/app/util/ai";
 import { prisma } from "@/app/util/db";
 import DefinedExperiments from "@/components/DefinedExperiments";
+import PromptOutput from "@/components/PromptOutput";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 const Dashboard = async () => {
@@ -34,6 +36,16 @@ const Dashboard = async () => {
     }
   }
 
+  const apiKey = process.env.GROQ_API_KEY;
+
+  if (!apiKey) {
+    console.error("API key not found in environment variables.");
+    // Handle the case where the API key is missing (e.g., display an error message)
+    return <div>Missing API Key</div>;
+  }
+
+  // queryGroq(); // this works when uncommented
+
   return (
     <div className="p-4">
       <div>
@@ -41,22 +53,14 @@ const Dashboard = async () => {
           Dashboard <span>{userId ? "✅" : "Finding User"}</span>
         </h3>
         <span>
-          Welcome {userName}, let's start testing some LLMs. Below we have a few
-          tests.
+          Welcome {userName}, let&apos;s start testing some LLMs. Below we have
+          a few tests.
         </span>
+        <button>Query Groq</button>
       </div>
       <div>
         <DefinedExperiments />
-      </div>
-      <div className="p-2 my-4">
-        <input
-          type="text"
-          placeholder="...your query"
-          className=" font-black "
-        />
-      </div>
-      <div className="mt-4 bg-slate-600 w-[800px]">
-        <textarea name="output" id="output1"></textarea>
+        <PromptOutput />
       </div>
     </div>
   );

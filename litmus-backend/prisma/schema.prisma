@@ -25,7 +25,7 @@ model Experiment {
   id Int @id @default(autoincrement())
   name String
   systemPrompt String
-  llmModel String
+  // llmModel String // this needs to be moved out to it's own table probably
   userId Int
   user User @relation(fields: [userId], references: [id])
 
@@ -71,4 +71,10 @@ model TestCase {
 
   testCaseResult TestCaseResult[]
   experimentTestCase ExperimentTestCase[]
+}
+
+model llmModel {
+  id Int @id @default(autoincrement())
+  llmName String
+  connectionString String?
 }
