@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@/context/QContext";
 
 const PromptOutput = () => {
-  const query = "Knock Kock!";
+  // const query = "Knock Kock!";
+  const { query } = useQuery();
   const [groqResponse, setGroqResponse] = useState({
     alpha: "",
     beta: "",

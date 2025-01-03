@@ -2,6 +2,8 @@
 import { prisma } from "@/app/util/db";
 import DefinedExperiments from "@/components/DefinedExperiments";
 import PromptOutput from "@/components/PromptOutput";
+import UserExperiment from "@/components/UserExperiment";
+import { QueryProvider } from "@/context/QContext";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 const Dashboard = async () => {
@@ -44,8 +46,6 @@ const Dashboard = async () => {
     return <div>Missing API Key</div>;
   }
 
-  // queryGroq(); // this works when uncommented
-
   return (
     <div className="p-4">
       <div>
@@ -59,8 +59,11 @@ const Dashboard = async () => {
         <button>Query Groq</button>
       </div>
       <div>
-        <DefinedExperiments />
-        <PromptOutput />
+        <QueryProvider>
+          <DefinedExperiments />
+          <UserExperiment />
+          <PromptOutput />
+        </QueryProvider>
       </div>
     </div>
   );
