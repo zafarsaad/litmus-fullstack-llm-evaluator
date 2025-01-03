@@ -1,26 +1,15 @@
 "use client";
 
-import { queryGroq } from "@/app/util/ai";
 import { useState } from "react";
-// import { useApiKey } from "@/app/util/apiKeyContext";
 
 const PromptOutput = () => {
-  //   const apiKey = useApiKey();
   const query = "Knock Kock!";
-  const [groqResponse, setGroqResponse] = useState("");
+  const [groqResponse, setGroqResponse] = useState({
+    alpha: "",
+    beta: "",
+    gamma: "",
+  });
   const [loadingResponse, setLoadingResponse] = useState(false);
-
-  //   const handleSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     setLoadingResponse(true);
-
-  //     const newGroqResponse = await fetch(
-  //       `api/groq/?query=${encodeURIComponent(query)}`
-  //     );
-  //     const data = await newGroqResponse.json();
-  //     console.log(newGroqResponse);
-  //     setGroqResonse(data);
-  //   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +35,20 @@ const PromptOutput = () => {
       }
 
       console.log(data);
-      setGroqResponse(data.message || "No response message");
+      setGroqResponse({
+        alpha:
+          data.alpha.response || data.alpha.error || "alpha response missing",
+        beta: data.beta.response || data.beta.error || "beta response missing",
+        gamma:
+          data.gamma.response || data.gamma.error || "gamma response missing",
+      });
     } catch (error) {
       console.error("Error fetching Groq response:", error);
-      setGroqResponse("Error fetching Groq response");
+      setGroqResponse({
+        alpha: "Error on all 3",
+        beta: "Error on all 3",
+        gamma: "Error on all 3",
+      });
     } finally {
       setLoadingResponse(false);
     }
@@ -65,7 +64,20 @@ const PromptOutput = () => {
         Test
       </button>
       {loadingResponse && <span>...loading</span>}
-      <div>{groqResponse}</div>
+      <div className="flex flex-row border-2 rounded-md px-2 justify-between my-2">
+        <div>
+          <h2 className="bg-slate-700">Alpha Response</h2>
+          <p>{groqResponse.alpha}</p>
+        </div>
+        <div>
+          <h2 className="bg-slate-700">Beta Response</h2>
+          <p>{groqResponse.beta}</p>
+        </div>
+        <div>
+          <h2 className="bg-slate-700">Gamma Response</h2>
+          <p>{groqResponse.gamma}</p>
+        </div>
+      </div>
     </div>
   );
 };
