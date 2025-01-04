@@ -54,29 +54,31 @@ const PromptOutput = () => {
     } finally {
       setLoadingResponse(false);
     }
+
+    await fetch(`/api/openAi/`);
   };
 
   return (
     <div className="my-2">
       <div>Prompt Output</div>
       <button
-        className="bg-slate-800 border-r-amber-600 border-2 rounded-md px-2"
+        className="bg-slate-900 border-amber-600 border rounded-md p-2 hover:bg-slate-600"
         onClick={handleSubmit}
       >
-        Test
+        Run Tests
       </button>
       {loadingResponse && <span>...loading</span>}
       <div className="flex flex-row border-2 rounded-md px-2 justify-between my-2">
         <div>
-          <h2 className="bg-slate-700">Alpha Response</h2>
+          <h2 className="bg-slate-700">Alpha (llama3-70b-8192) Response</h2>
           <p>{groqResponse.alpha}</p>
         </div>
         <div>
-          <h2 className="bg-slate-700">Beta Response</h2>
+          <h2 className="bg-slate-700">Beta (mixtral-8x7b-32768) Response</h2>
           <p>{groqResponse.beta}</p>
         </div>
         <div>
-          <h2 className="bg-slate-700">Gamma Response</h2>
+          <h2 className="bg-slate-700">Gamma (llama3-8b-8192) Response</h2>
           <p>{groqResponse.gamma}</p>
         </div>
       </div>
